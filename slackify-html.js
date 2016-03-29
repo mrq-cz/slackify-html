@@ -30,7 +30,7 @@ function walkList(dom, ordered, nesting) {
         switch (el.name) {
           case 'li':
             for (i=0; i < nesting * 2; i++) {
-              out += ' ';
+              out += '^';
             }
             out += (ordered ? listItemIndex++ + '. ' : "* ") + walk(el.children) + '\n';
             break;
@@ -188,5 +188,6 @@ function walk(dom) {
         }
       }
     });
+    console.log(out);
   return out;
 }
