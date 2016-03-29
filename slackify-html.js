@@ -30,16 +30,12 @@ function walkList(dom, ordered, nesting) {
         switch (el.name) {
           case 'li':
             for (i=0; i < nesting * 2; i++) {
-              out += '^';
+              out += ' ';
             }
-            out += (ordered ? listItemIndex++ + '. ' : "* ") + walk(el.children) + '\n';
-            break;
-          case 'ol':
-          case 'ul':
-            out += walkList(el.children, 'ol' === el.name, nesting+1);
+            out += (ordered ? listItemIndex++ + '. ' : "* ") + walk(el.children, nesting + 1) + '\n';
             break;
           default:
-            out += walk(el.children);
+            out += walk(el.children, nesting + 1);
         }
       }
     });
@@ -121,7 +117,6 @@ function walkTableBody(dom) {
     dom.forEach(function (el) {
       if ('text' === el.type) {
         if (el.data.trim() !== '') {
-          console.log('###' + el.data + '###');
           out += el.data;
         }
       }
@@ -137,7 +132,10 @@ function walkTableBody(dom) {
 }
 
 
-function walk(dom) {
+function walk(dom, nesting) {
+  if (!nesting) {
+    nesting = 0;
+  }
   var out = '';
   if (dom)
     dom.forEach(function (el) {
@@ -171,7 +169,7 @@ function walk(dom) {
             break;
           case 'ol':
           case 'ul':
-            out += walkList(el.children, 'ol' === el.name, 0);
+            out += walkList(el.children, 'ol' === el.name, nesting);
             break;
           case 'code':
             out += '`' + walk(el.children) + '`';
