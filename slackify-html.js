@@ -16,7 +16,7 @@ module.exports = function slackify(html) {
     return '';
 };
 
-function walkList(dom, ordered) {
+function walkList(dom, ordered, nesting) {
   var out = '';
   if (dom) {
     var listItemIndex = 1;
@@ -29,7 +29,14 @@ function walkList(dom, ordered) {
       else if ('tag' === el.type) {
         switch (el.name) {
           case 'li':
+            for (i=0; i < nesting * 2; i++) {
+              out += ' ';
+            }
             out += (ordered ? listItemIndex++ + '. ' : "* ") + walk(el.children) + '\n';
+            break;
+          case 'ol':
+          case 'ul':
+            out += walkList(el.children, 'ol' === el.name, nesting+1);
             break;
           default:
             out += walk(el.children);
@@ -164,7 +171,7 @@ function walk(dom) {
             break;
           case 'ol':
           case 'ul':
-            out += walkList(el.children, 'ol' === el.name);
+            out += walkList(el.children, 'ol' === el.name, 0);
             break;
           case 'code':
             out += '`' + walk(el.children) + '`';
