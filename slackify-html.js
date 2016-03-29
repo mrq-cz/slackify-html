@@ -21,10 +21,8 @@ function walkList(dom, ordered, nesting) {
   if (dom) {
     var listItemIndex = 1;
     dom.forEach(function (el) {
-      if ('text' === el.type) {
-        if (el.data.trim() !== '') {
-          out += el.data;
-        }
+      if ('text' === el.type && el.data.trim() !== '') {
+        out += el.data;
       }
       else if ('tag' === el.type) {
         switch (el.name) {
@@ -81,10 +79,8 @@ function walkTableHead(dom) {
   if (dom) {
     var headers = [];
     dom.forEach(function (el) {
-      if ('text' === el.type) {
-        if (el.data.trim() !== '') {
-          out += el.data;
-        }
+      if ('text' === el.type && el.data.trim() !== '') {
+        out += el.data;
       }
       else if ('tr' === el.name) {
         out += walkTableHead(el.children);
@@ -115,10 +111,8 @@ function walkTableBody(dom) {
   var out = '';
   if (dom) {
     dom.forEach(function (el) {
-      if ('text' === el.type) {
-        if (el.data.trim() !== '') {
-          out += el.data;
-        }
+      if ('text' === el.type && el.data.trim() !== '') {
+        out += el.data;
       }
       else if ('td' === el.name) {
         out += '| ' + walkTableBody(el.children) + ' ';
@@ -180,7 +174,10 @@ function walk(dom, nesting) {
           case 'table':
             out += walkTable(el.children);
             break;
-          //FIXME IMG
+          case 'img':
+            var alt = el.attribs.alt;
+            out += '<Inline Image' + (alt !== '' ? '('+alt+')' : '') + ': ' + el.attribs.src + '>';
+            break;
           default:
             out += walk(el.children);
         }
