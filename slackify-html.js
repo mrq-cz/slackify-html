@@ -188,6 +188,5 @@ function walk(dom) {
         }
       }
     });
-    console.log(out);
   return out;
 }
