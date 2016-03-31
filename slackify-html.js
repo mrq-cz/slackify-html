@@ -4,6 +4,7 @@ var htmlparser = require('htmlparser'),
 entities = new Entities();
 
 module.exports = function slackify(html) {
+  console.log('v1.1');
   var handler = new htmlparser.DefaultHandler(function (error, dom) {
     // error ignored
   });
