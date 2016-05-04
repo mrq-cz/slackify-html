@@ -30,7 +30,7 @@ function walkList(dom, ordered, nesting) {
             for (i=0; i < nesting * 2; i++) {
               out += ' ';
             }
-            out += (ordered ? listItemIndex++ + '. ' : "* ") + walk(el.children, nesting + 1) + '\n';
+            out += (ordered ? listItemIndex++ + '. ' : "• ") + walk(el.children, nesting + 1) + '\n';
             break;
           default:
             out += walk(el.children, nesting + 1);
