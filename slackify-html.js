@@ -139,7 +139,7 @@ function walk(dom, nesting) {
       else if ('tag' === el.type) {
         switch (el.name) {
           case 'a':
-            if (el.attribs.href) {
+            if (el.attribs && el.attribs.href) {
               out += '<' + el.attribs.href + '|' + walk(el.children) + '>';
             }
             else {
