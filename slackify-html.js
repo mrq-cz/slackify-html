@@ -152,27 +152,43 @@ function walk(dom, nesting) {
           case 'h4':
           case 'strong':
           case 'b':
-            var addSpace = false;
+            var prefixSpace = false;
+            var suffixSpace = false;
             content = walk(el.children);
+            if (content && content.charAt(0) === ' ') {
+              content = content.substr(1, content.length);
+              prefixSpace = true;
+            }
             if (content && content.charAt(content.length - 1) === ' ') {
               content = content.substr(0, content.length - 1);
-              addSpace = true;
+              suffixSpace = true;
+            }
+            if (prefixSpace) {
+              out += ' ';
             }
             out += '*' + content + '*';
-            if (addSpace) {
+            if (suffixSpace) {
               out += ' ';
             }
             break;
           case 'i':
           case 'em':
-            var addSpace = false;
+            var prefixSpace = false;
+            var suffixSpace = false;
             content = walk(el.children);
+            if (content && content.charAt(0) === ' ') {
+              content = content.substr(1, content.length);
+              prefixSpace = true;
+            }
             if (content && content.charAt(content.length - 1) === ' ') {
               content = content.substr(0, content.length - 1);
-              addSpace = true;
+              suffixSpace = true;
+            }
+            if (prefixSpace) {
+              out += ' ';
             }
             out += '_' + content + '_';
-            if (addSpace) {
+            if (suffixSpace) {
               out += ' ';
             }
             break;
