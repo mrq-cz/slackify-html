@@ -155,7 +155,7 @@ function walk(dom, nesting) {
             var addSpace = false;
             content = walk(el.children);
             if (content && content.charAt(content.length - 1) === ' ') {
-              content = content.substring(content, 0, content.length - 1);
+              content = content.substr(0, content.length - 1);
               addSpace = true;
             }
             out += '*' + content + '*';
@@ -168,7 +168,7 @@ function walk(dom, nesting) {
             var addSpace = false;
             content = walk(el.children);
             if (content && content.charAt(content.length - 1) === ' ') {
-              content = content.substring(content, 0, content.length - 1);
+              content = content.substr(0, content.length - 1);
               addSpace = true;
             }
             out += '_' + content + '_';
