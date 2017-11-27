@@ -146,25 +146,47 @@ function walk(dom, nesting) {
               out += walk(el.children);
             }
             break;
+          case 'h1':
+          case 'h2':
+          case 'h3':
+          case 'h4':
           case 'strong':
           case 'b':
-            out += '*' + walk(el.children) + '*';
+            var addSpace = false;
+            content = walk(el.children);
+            if (content && content.charAt(content.length - 1) === ' ') {
+              content = content.substring(content, 0, content.length - 1);
+              addSpace = true;
+            }
+            out += '*' + content + '*';
+            if (addSpace) {
+              out += ' ';
+            }
             break;
           case 'i':
           case 'em':
-            out += '_' + walk(el.children) + '_';
+            var addSpace = false;
+            content = walk(el.children);
+            if (content && content.charAt(content.length - 1) === ' ') {
+              content = content.substring(content, 0, content.length - 1);
+              addSpace = true;
+            }
+            out += '_' + content + '_';
+            if (addSpace) {
+              out += ' ';
+            }
+            break;
+          case 'div':
+            out += walk(el.children);
+            if (el.attribs && el.attribs.class === 'ghq-card-content__paragraph') {
+              out += '\n';
+            }
             break;
           case 'p':
             out += walk(el.children) + '\n';
             break;
           case 'br':
             out += walk(el.children) + '\n';
-            break;
-          case 'h1':
-          case 'h2':
-          case 'h3':
-          case 'h4':
-            out += '*' + walk(el.children) + '*';
             break;
           case 'ol':
           case 'ul':
