@@ -196,7 +196,7 @@ function walk(dom, nesting) {
             out += '`' + walk(el.children) + '`';
             break;
           case 'pre':
-            out += '```\n' + walkPre(el.children) + '```';
+            out += '```\n' + walkPre(el.children) + '```\n';
             break;
           case 'table':
             out += walkTable(el.children);
