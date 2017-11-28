@@ -155,6 +155,7 @@ function walk(dom, nesting) {
             var prefixSpace = false;
             var suffixSpace = false;
             content = walk(el.children);
+            content = content.replace(/\n/g, '');
             console.log(el.name + " content1: " + content);
             if (content && content.charAt(0) === ' ') {
               content = content.substr(1, content.length);
