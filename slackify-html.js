@@ -154,7 +154,7 @@ function walk(dom, nesting) {
           case 'b':
             content = walk(el.children);
             var contentArr = content.split('\n');
-            for (var i=0; i<contentArr.length(); i++) {
+            for (var i=0; i<contentArr.length; i++) {
               content = contentArr[i];
               if (content.trim() !== '') {
                 var prefixSpace = false;
@@ -177,7 +177,7 @@ function walk(dom, nesting) {
                 }
                 out += innerOutput;
               }
-              if (i < contentArr.length() - 1) {
+              if (i < contentArr.length - 1) {
                 out += '\n';
               }
             }
@@ -194,7 +194,7 @@ function walk(dom, nesting) {
           case 'em':
             content = walk(el.children);
             var contentArr = content.split('\n');
-            for (var i=0; i<contentArr.length(); i++) {
+            for (var i=0; i<contentArr.length; i++) {
               content = contentArr[i];
               if (content.trim() !== '') {
                 var prefixSpace = false;
@@ -217,7 +217,7 @@ function walk(dom, nesting) {
                 }
                 out += innerOutput;
               }
-              if (i < contentArr.length() - 1) {
+              if (i < contentArr.length - 1) {
                 out += '\n';
               }
             }
