@@ -154,31 +154,32 @@ function walk(dom, nesting) {
           case 'b':
             content = walk(el.children);
             var contentArr = content.split('\n');
-            for (content in contentArr) {
-              if (content.trim() === '') {
+            for (var i=0; i<contentArr.length(); i++) {
+              content = contentArr[i];
+              if (content.trim() !== '') {
+                var prefixSpace = false;
+                var suffixSpace = false;
+                if (content && content.charAt(0) === ' ') {
+                  content = content.substr(1, content.length);
+                  prefixSpace = true;
+                }
+                if (content && content.charAt(content.length - 1) === ' ') {
+                  content = content.substr(0, content.length - 1);
+                  suffixSpace = true;
+                }
+                var innerOutput = '';
+                if (prefixSpace) {
+                  innerOutput += ' ';
+                }
+                innerOutput += '*' + content + '*';
+                if (suffixSpace) {
+                  innerOutput += ' ';
+                }
+                out += innerOutput;
+              }
+              if (i < contentArr.length() - 1) {
                 out += '\n';
-                continue;
               }
-              var prefixSpace = false;
-              var suffixSpace = false;
-              if (content && content.charAt(0) === ' ') {
-                content = content.substr(1, content.length);
-                prefixSpace = true;
-              }
-              if (content && content.charAt(content.length - 1) === ' ') {
-                content = content.substr(0, content.length - 1);
-                suffixSpace = true;
-              }
-              var innerOutput = '';
-              if (prefixSpace) {
-                innerOutput += ' ';
-              }
-              innerOutput += '*' + content + '*';
-              if (suffixSpace) {
-                innerOutput += ' ';
-              }
-              out += innerOutput;
-              out += '\n';
             }
             switch (el.name) {
               case 'h1':
@@ -191,34 +192,35 @@ function walk(dom, nesting) {
             break;
           case 'i':
           case 'em':
-          content = walk(el.children);
-          var contentArr = content.split('\n');
-          for (content in contentArr) {
-            if (content.trim() === '') {
-              out += '\n';
-              continue;
+            content = walk(el.children);
+            var contentArr = content.split('\n');
+            for (var i=0; i<contentArr.length(); i++) {
+              content = contentArr[i];
+              if (content.trim() !== '') {
+                var prefixSpace = false;
+                var suffixSpace = false;
+                if (content && content.charAt(0) === ' ') {
+                  content = content.substr(1, content.length);
+                  prefixSpace = true;
+                }
+                if (content && content.charAt(content.length - 1) === ' ') {
+                  content = content.substr(0, content.length - 1);
+                  suffixSpace = true;
+                }
+                var innerOutput = '';
+                if (prefixSpace) {
+                  innerOutput += ' ';
+                }
+                innerOutput += '*' + content + '*';
+                if (suffixSpace) {
+                  innerOutput += ' ';
+                }
+                out += innerOutput;
+              }
+              if (i < contentArr.length() - 1) {
+                out += '\n';
+              }
             }
-            var prefixSpace = false;
-            var suffixSpace = false;
-            if (content && content.charAt(0) === ' ') {
-              content = content.substr(1, content.length);
-              prefixSpace = true;
-            }
-            if (content && content.charAt(content.length - 1) === ' ') {
-              content = content.substr(0, content.length - 1);
-              suffixSpace = true;
-            }
-            var innerOutput = '';
-            if (prefixSpace) {
-              innerOutput += ' ';
-            }
-            innerOutput += '_' + content + '_';
-            if (suffixSpace) {
-              innerOutput += ' ';
-            }
-            out += innerOutput;
-            out += '\n';
-          }
             break;
           case 'div':
             out += walk(el.children);
