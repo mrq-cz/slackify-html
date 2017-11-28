@@ -152,10 +152,54 @@ function walk(dom, nesting) {
           case 'h4':
           case 'strong':
           case 'b':
+            content = walk(el.children);
+            var contentArr = content.split('\n');
+            for (content in contentArr) {
+              if (content.trim() === '') {
+                out += '\n';
+                continue;
+              }
+              var prefixSpace = false;
+              var suffixSpace = false;
+              if (content && content.charAt(0) === ' ') {
+                content = content.substr(1, content.length);
+                prefixSpace = true;
+              }
+              if (content && content.charAt(content.length - 1) === ' ') {
+                content = content.substr(0, content.length - 1);
+                suffixSpace = true;
+              }
+              var innerOutput = '';
+              if (prefixSpace) {
+                innerOutput += ' ';
+              }
+              innerOutput += '*' + content + '*';
+              if (suffixSpace) {
+                innerOutput += ' ';
+              }
+              out += innerOutput;
+              out += '\n';
+            }
+            switch (el.name) {
+              case 'h1':
+              case 'h2':
+              case 'h3':
+              case 'h4':
+                out += '\n';
+                break;
+            }
+            break;
+          case 'i':
+          case 'em':
+          content = walk(el.children);
+          var contentArr = content.split('\n');
+          for (content in contentArr) {
+            if (content.trim() === '') {
+              out += '\n';
+              continue;
+            }
             var prefixSpace = false;
             var suffixSpace = false;
-            content = walk(el.children);
-            content = content.replace(/\n/g, '');
             if (content && content.charAt(0) === ' ') {
               content = content.substr(1, content.length);
               prefixSpace = true;
@@ -168,40 +212,13 @@ function walk(dom, nesting) {
             if (prefixSpace) {
               innerOutput += ' ';
             }
-            innerOutput += '*' + content + '*';
+            innerOutput += '_' + content + '_';
             if (suffixSpace) {
               innerOutput += ' ';
             }
             out += innerOutput;
-            switch (el.name) {
-              case 'h1':
-              case 'h2':
-              case 'h3':
-              case 'h4':
-                out += '\n';
-                break;
-            }
-            break;
-          case 'i':
-          case 'em':
-            var prefixSpace = false;
-            var suffixSpace = false;
-            content = walk(el.children);
-            if (content && content.charAt(0) === ' ') {
-              content = content.substr(1, content.length);
-              prefixSpace = true;
-            }
-            if (content && content.charAt(content.length - 1) === ' ') {
-              content = content.substr(0, content.length - 1);
-              suffixSpace = true;
-            }
-            if (prefixSpace) {
-              out += ' ';
-            }
-            out += '_' + content + '_';
-            if (suffixSpace) {
-              out += ' ';
-            }
+            out += '\n';
+          }
             break;
           case 'div':
             out += walk(el.children);
