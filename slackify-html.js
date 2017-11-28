@@ -155,6 +155,7 @@ function walk(dom, nesting) {
             var prefixSpace = false;
             var suffixSpace = false;
             content = walk(el.children);
+            console.log("content1: " + content);
             if (content && content.charAt(0) === ' ') {
               content = content.substr(1, content.length);
               prefixSpace = true;
@@ -163,6 +164,7 @@ function walk(dom, nesting) {
               content = content.substr(0, content.length - 1);
               suffixSpace = true;
             }
+            console.log("content2: " + content);
             if (prefixSpace) {
               out += ' ';
             }
