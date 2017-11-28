@@ -174,7 +174,7 @@ function walk(dom, nesting) {
                 }
                 if (content.charAt(0) === '*' &&
                     content.charAt(content.length - 1) === '*') {
-                  innerOutput =+ content;
+                  innerOutput += content;
                 }
                 else {
                   innerOutput += '*' + content + '*';
