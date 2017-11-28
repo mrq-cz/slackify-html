@@ -211,7 +211,7 @@ function walk(dom, nesting) {
                 if (prefixSpace) {
                   innerOutput += ' ';
                 }
-                innerOutput += '*' + content + '*';
+                innerOutput += '_' + content + '_';
                 if (suffixSpace) {
                   innerOutput += ' ';
                 }
