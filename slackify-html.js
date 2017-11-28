@@ -164,7 +164,7 @@ function walk(dom, nesting) {
               content = content.substr(0, content.length - 1);
               suffixSpace = true;
             }
-            console.log("content2: " + content);
+            console.log(el.name + " content2: " + content);
             var innerOutput = '';
             if (prefixSpace) {
               innerOutput += ' ';
@@ -173,6 +173,7 @@ function walk(dom, nesting) {
             if (suffixSpace) {
               innerOutput += ' ';
             }
+            console.log(el.name + " innerOutput: " + innerOutput);
             out += innerOutput;
             break;
           case 'i':
