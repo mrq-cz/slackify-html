@@ -154,6 +154,7 @@ function walk(dom, nesting) {
           case 'b':
             content = walk(el.children);
             var contentArr = content.split('\n');
+            var innerOutput = '';
             for (var i=0; i<contentArr.length; i++) {
               content = contentArr[i];
               if (content.trim() !== '') {
@@ -171,16 +172,23 @@ function walk(dom, nesting) {
                 if (prefixSpace) {
                   innerOutput += ' ';
                 }
-                innerOutput += '*' + content + '*';
+                if (content.charAt(0) === '*' &&
+                    content.charAt(content.length - 1) === '*') {
+                  innerOutput =+ content;
+                }
+                else {
+                  innerOutput += '*' + content + '*';
+                }
                 if (suffixSpace) {
                   innerOutput += ' ';
                 }
-                out += innerOutput;
               }
               if (i < contentArr.length - 1) {
-                out += '\n';
+                innerOutput += '\n';
               }
             }
+            out += innerOutput;
+
             switch (el.name) {
               case 'h1':
               case 'h2':
