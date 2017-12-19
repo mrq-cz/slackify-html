@@ -115,7 +115,7 @@ function walkTableBody(dom) {
         out += el.data;
       }
       else if ('td' === el.name) {
-        out += '| ' + walkTableBody(el.children) + ' ';
+        out += '| ' + walk(el.children) + ' ';
       }
       else if ('tr' === el.name) {
         out += walkTableBody(el.children) + '|\n';
