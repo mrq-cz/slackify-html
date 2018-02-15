@@ -168,7 +168,6 @@ function walk(dom, nesting) {
                   content = content.substr(0, content.length - 1);
                   suffixSpace = true;
                 }
-                var innerOutput = '';
                 if (prefixSpace) {
                   innerOutput += ' ';
                 }
@@ -202,6 +201,7 @@ function walk(dom, nesting) {
           case 'em':
             content = walk(el.children);
             var contentArr = content.split('\n');
+            var innerOutput = '';
             for (var i=0; i<contentArr.length; i++) {
               content = contentArr[i];
               if (content.trim() !== '') {
@@ -215,7 +215,6 @@ function walk(dom, nesting) {
                   content = content.substr(0, content.length - 1);
                   suffixSpace = true;
                 }
-                var innerOutput = '';
                 if (prefixSpace) {
                   innerOutput += ' ';
                 }
