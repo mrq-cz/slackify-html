@@ -16,10 +16,10 @@ module.exports = function slackify(html) {
     return '';
 };
 
-function walkList(dom, ordered, nesting) {
+function walkList(dom, ordered, nesting, start) {
   var out = '';
   if (dom) {
-    var listItemIndex = 1;
+    var listItemIndex = start ? start : 1;
     dom.forEach(function (el) {
       if ('text' === el.type && el.data.trim() !== '') {
         out += el.data;
@@ -243,7 +243,7 @@ function walk(dom, nesting) {
             break;
           case 'ol':
           case 'ul':
-            out += walkList(el.children, 'ol' === el.name, nesting);
+            out += walkList(el.children, 'ol' === el.name, nesting, el.attribs.start);
             break;
           case 'code':
             out += '`' + walk(el.children) + '`';
