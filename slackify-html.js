@@ -243,7 +243,8 @@ function walk(dom, nesting) {
             break;
           case 'ol':
           case 'ul':
-            out += walkList(el.children, 'ol' === el.name, nesting, el.attribs.start);
+            var startIndex = (el.attribs) ? el.attribs.start : false;
+            out += walkList(el.children, 'ol' === el.name, nesting, startIndex);
             break;
           case 'code':
             out += '`' + walk(el.children) + '`';
