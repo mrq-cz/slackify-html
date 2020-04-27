@@ -126,7 +126,7 @@ function walkTableBody(dom) {
 }
 
 //checks and fixes header output with too many asterisks
-function checkHeaderOutput(output) {
+function checkHeaderBoldOutput(output) {
   asteriskSplit = output.split('*');
   if (asteriskSplit.length > 3) {
     replaceOutput = '';
@@ -195,7 +195,7 @@ function walk(dom, nesting) {
                   innerOutput += ' ';
                 }
                 if (el.name === 'h1' || el.name === 'h2' || el.name === 'h3') {
-                  innerOutput = checkHeaderOutput(innerOutput);
+                  innerOutput = checkHeaderBoldOutput(innerOutput);
                 }
               }
               if (i < contentArr.length - 1) {
