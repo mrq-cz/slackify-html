@@ -125,6 +125,19 @@ function walkTableBody(dom) {
   return out;
 }
 
+//checks and fixes h1 output with too many asterisks
+function checkH1Output(output) {
+  asteriskSplit = output.split('*');
+  if (asteriskSplit.length > 3) {
+    replaceOutput = '';
+    asteriskSplit.forEach(function(text) {
+      replaceOutput += text;
+    });
+    output = '*' + replaceOutput + '*';
+  }
+  return output;
+}
+
 
 function walk(dom, nesting) {
   if (!nesting) {
@@ -180,6 +193,14 @@ function walk(dom, nesting) {
                 }
                 if (suffixSpace) {
                   innerOutput += ' ';
+                }
+                switch (el.name) {
+                  case 'h1':
+                    innerOutput = checkH1Output(innerOutput);
+                    break;
+                  case 'h2':
+                  case 'h3':
+                  case 'h4':
                 }
               }
               if (i < contentArr.length - 1) {

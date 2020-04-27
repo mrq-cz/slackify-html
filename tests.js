@@ -31,6 +31,11 @@ tap.test('vcheck example', function vcheck(t) {
   t.end();
 });
 
+tap.test('fix header h1 with bold text', function headers(t) {
+  t.equals(slackify('<h1>h1 with <b>bold</b> text</h1>'), '*h1 with bold text*\n');
+  t.end();
+});
+
 tap.test('full example', function vcheck(t) {
   var input = `<div class="ghq-markdown-content" ><h2>Security Overview Header</h2>
 <p><strong>We take the security of your data very seriously!</strong></p>
