@@ -31,8 +31,11 @@ tap.test('vcheck example', function vcheck(t) {
   t.end();
 });
 
-tap.test('fix header h1 with bold text', function headers(t) {
-  t.equals(slackify('<h1>h1 with <b>bold</b> text</h1>'), '*h1 with bold text*\n');
+tap.test('fix h1, h2, h3 with bold text', function headers(t) {
+  var input = `<h1>h1 with <b>bold</b> text</h1><h2>h2 with <b>bold</b> text</h2><h3>h3 with <b>bold</b> text</h3>`;
+  var expected = '*h1 with bold text*\n*h2 with bold text*\n*h3 with bold text*\n';
+  var output = slackify(input);
+    t.equals(output, expected);
   t.end();
 });
 
