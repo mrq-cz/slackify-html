@@ -125,20 +125,6 @@ function walkTableBody(dom) {
   return out;
 }
 
-//checks and fixes header output with too many asterisks
-function checkHeaderBoldOutput(output) {
-  asteriskSplit = output.split('*');
-  if (asteriskSplit.length > 3) {
-    replaceOutput = '';
-    asteriskSplit.forEach(function(text) {
-      replaceOutput += text;
-    });
-    output = '*' + replaceOutput + '*';
-  }
-  return output;
-}
-
-
 function walk(dom, nesting) {
   if (!nesting) {
     nesting = 0;
@@ -188,14 +174,15 @@ function walk(dom, nesting) {
                     content.charAt(content.length - 1) === '*') {
                   innerOutput += content;
                 }
+                else if (el.name === 'h1' || el.name === 'h2' || el.name === 'h3' || el.name === 'h4') {
+                  content = content.replace(/\*/g, '')
+                  innerOutput = '*' + content + '*';
+                }
                 else {
                   innerOutput += '*' + content + '*';
                 }
                 if (suffixSpace) {
                   innerOutput += ' ';
-                }
-                if (el.name === 'h1' || el.name === 'h2' || el.name === 'h3') {
-                  innerOutput = checkHeaderBoldOutput(innerOutput);
                 }
               }
               if (i < contentArr.length - 1) {
