@@ -146,9 +146,25 @@ function walk(dom, nesting) {
             }
             break;
           case 'h1':
+            content = walk(el.children);
+            content = content.replace(/\*/g, '');
+            out += '*' + content + '*\n';
+            break;
           case 'h2':
+            content = walk(el.children);
+            content = content.replace(/\*/g, '')
+            out += '*' + content + '*\n';
+            break;
           case 'h3':
+            content = walk(el.children);
+            content = content.replace(/\*/g, '')
+            out += '*' + content + '*\n';
+            break;
           case 'h4':
+            content = walk(el.children);
+            content = content.replace(/\*/g, '')
+            out += '*' + content + '*\n';
+            break;
           case 'strong':
           case 'b':
             content = walk(el.children);
@@ -173,10 +189,6 @@ function walk(dom, nesting) {
                 if (content.charAt(0) === '*' &&
                     content.charAt(content.length - 1) === '*') {
                   innerOutput += content;
-                }
-                else if (el.name === 'h1' || el.name === 'h2' || el.name === 'h3' || el.name === 'h4') {
-                  content = content.replace(/\*/g, '')
-                  innerOutput = '*' + content + '*';
                 }
                 else {
                   innerOutput += '*' + content + '*';
