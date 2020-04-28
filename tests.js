@@ -43,9 +43,7 @@ tap.test('test bold text with headers', function boldheaders(t) {
   t.equals(slackify('<h1>alternating<b> bold </b>header<b> content </b></h1>'), '*alternating bold header content* \n');
   t.equals(slackify('<h2>too many *asterisks* bold text</h2>'), '*too many asterisks bold text*\n');
   t.equals(slackify('<h3>header3 <b>bold tag continues </h3> outside</b>'), '*header3 bold tag continues* \n outside');
-  var allHeadersInput = '<h1>h1 with<b> bold </b>text</h1><h2>h2 with <b>bold</b> text</h2><h3>h3 with <b>bold</b> text</h3><h4>h4 with <b>bold</b> text</h4>';
-  var allHeadersExpected = '*h1 with bold text*\n*h2 with bold text*\n*h3 with bold text*\n*h4 with bold text*\n';
-  t.equals(slackify(allHeadersInput), allHeadersExpected);
+  t.equals(slackify('<h1>h1 with<b> bold </b>text</h1><h2>h2 with <b>bold</b> text</h2><h3>h3 with <b>bold</b> text</h3><h4>h4 with <b>bold</b> text</h4>'), '*h1 with bold text*\n*h2 with bold text*\n*h3 with bold text*\n*h4 with bold text*\n');
   t.end();
 });
 
