@@ -170,13 +170,12 @@ function walk(dom, nesting) {
                 if (prefixSpace) {
                   innerOutput += ' ';
                 }
-                if (content.charAt(0) === '*' &&
-                    content.charAt(content.length - 1) === '*') {
-                  innerOutput += content;
-                }
-                else if (el.name === 'h1' || el.name === 'h2' || el.name === 'h3' || el.name === 'h4') {
+                if (el.name === 'h1' || el.name === 'h2' || el.name === 'h3' || el.name === 'h4') {
                   content = content.replace(/\*/g, '');
                   innerOutput += '*' + content + '*';
+                }
+                else if (content.charAt(0) === '*' && content.charAt(content.length - 1) === '*') {
+                  innerOutput += content;
                 }
                 else {
                   innerOutput += '*' + content + '*';

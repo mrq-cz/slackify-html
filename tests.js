@@ -35,11 +35,17 @@ tap.test('test bold text', function boldtext(t) {
   t.equals(slackify('<b>totally bold</b>'), '*totally bold*');
   t.equals(slackify('<p><b>totally bold in paragraph</b></p>'), '*totally bold in paragraph*\n');
   t.equals(slackify('*already slackified bold*'), '*already slackified bold*');
+  t.equals(slackify('*bold <b>inside</b> asterisks*'), '*bold *inside* asterisks*');
+  t.equals(slackify('*asterisks *inside* asterisks*'), '*asterisks *inside* asterisks*');
   t.equals(slackify('<p>A sentence with<b> bold text </b>in between.</p>'), 'A sentence with *bold text* in between.\n');
   t.end();
 });
 
 tap.test('test bold text with headers', function boldheaders(t) {
+  t.equals(slackify('<b><h1>a completely bold title</h1></b>'), '*a completely bold title*\n');
+  t.equals(slackify('<h1><b>a completely bold title</b></h1>'), '*a completely bold title*\n');
+  t.equals(slackify('<h1>*asterisk title*</h1>'), '*asterisk title*\n');
+  t.equals(slackify('<h1>*asterisk title with *bold**</h1>'), '*asterisk title with bold*\n');
   t.equals(slackify('<h1>alternating<b> bold </b>header<b> content </b></h1>'), '*alternating bold header content* \n');
   t.equals(slackify('<h2>too many *asterisks* bold text</h2>'), '*too many asterisks bold text*\n');
   t.equals(slackify('<h3>header3 <b>bold tag continues </h3> outside</b>'), '*header3 bold tag continues* \n outside');
