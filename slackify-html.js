@@ -125,7 +125,6 @@ function walkTableBody(dom) {
   return out;
 }
 
-
 function walk(dom, nesting) {
   if (!nesting) {
     nesting = 0;
@@ -171,8 +170,11 @@ function walk(dom, nesting) {
                 if (prefixSpace) {
                   innerOutput += ' ';
                 }
-                if (content.charAt(0) === '*' &&
-                    content.charAt(content.length - 1) === '*') {
+                if (el.name === 'h1' || el.name === 'h2' || el.name === 'h3' || el.name === 'h4') {
+                  content = content.replace(/\*/g, '');
+                  innerOutput += '*' + content + '*';
+                }
+                else if (content.charAt(0) === '*' && content.charAt(content.length - 1) === '*') {
                   innerOutput += content;
                 }
                 else {

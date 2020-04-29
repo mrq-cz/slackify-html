@@ -31,8 +31,30 @@ tap.test('vcheck example', function vcheck(t) {
   t.end();
 });
 
+tap.test('test bold text', function boldtext(t) {
+  t.equals(slackify('<b>totally bold</b>'), '*totally bold*');
+  t.equals(slackify('<p><b>totally bold in paragraph</b></p>'), '*totally bold in paragraph*\n');
+  t.equals(slackify('*already slackified bold*'), '*already slackified bold*');
+  t.equals(slackify('*bold <b>inside</b> asterisks*'), '*bold *inside* asterisks*');
+  t.equals(slackify('*asterisks *inside* asterisks*'), '*asterisks *inside* asterisks*');
+  t.equals(slackify('<p>A sentence with<b> bold text </b>in between.</p>'), 'A sentence with *bold text* in between.\n');
+  t.end();
+});
+
+tap.test('test bold text with headers', function boldheaders(t) {
+  t.equals(slackify('<b><h1>a completely bold title</h1></b>'), '*a completely bold title*\n');
+  t.equals(slackify('<h1><b>a completely bold title</b></h1>'), '*a completely bold title*\n');
+  t.equals(slackify('<h1>*asterisk title*</h1>'), '*asterisk title*\n');
+  t.equals(slackify('<h1>*asterisk title with *bold**</h1>'), '*asterisk title with bold*\n');
+  t.equals(slackify('<h1>alternating<b> bold </b>header<b> content </b></h1>'), '*alternating bold header content* \n');
+  t.equals(slackify('<h2>too many *asterisks* bold text</h2>'), '*too many asterisks bold text*\n');
+  t.equals(slackify('<h3>header3 <b>bold tag continues </h3> outside</b>'), '*header3 bold tag continues* \n outside');
+  t.equals(slackify('<h1>h1 with<b> bold </b>text</h1><h2>h2 with <b>bold</b> text</h2><h3>h3 with <b>bold</b> text</h3><h4>h4 with <b>bold</b> text</h4>'), '*h1 with bold text*\n*h2 with bold text*\n*h3 with bold text*\n*h4 with bold text*\n');
+  t.end();
+});
+
 tap.test('full example', function vcheck(t) {
-  var input = `<div class="ghq-markdown-content" ><h2>Security Overview Header</h2>
+  var input = `<div class="ghq-markdown-content" ><h2>Security <b>Overview</b> Header</h2>
 <p><strong>We take the security of your data very seriously!</strong></p>
 <p>In order to instill the necessary confidence, we wanted to provide full transparency on <em>why</em>, <em>who</em>, <em>where</em>, <em>when</em> and <em>how</em> we protect your data.</p>
 <p>Given the sensitive nature of your content and need to maintain your privacy being a priority for us, we wanted to share the practices and policies we have put into place.</p>
@@ -51,7 +73,7 @@ tap.test('full example', function vcheck(t) {
 <li>sub 2</li>
 </ul>
 </li>
-<li>def</li>
+<li><b>def</b></li>
 <li>xyz</li>
 </ul>
 <p><code>and this</code></p>
@@ -80,7 +102,7 @@ tap.test('full example', function vcheck(t) {
 </tbody>
 </table>
 </div>`;
-var expected = '*Security Overview Header*\n\n*We take the security of your data very seriously!*\n\nIn order to instill the necessary confidence, we wanted to provide full transparency on _why_, _who_, _where_, _when_ and _how_ we protect your data.\n\nGiven the sensitive nature of your content and need to maintain your privacy being a priority for us, we wanted to share the practices and policies we have put into place.\n\n<https://www.getguru.com/privacy/|Privacy Policy>\n\nRemember this list\n\n1. foo\n2. bar\n3. buz\n\nand this list too...\n\n• _abc_\n  • sub 1\n  • sub 2\n\n\n• def\n• xyz\n\n\`and this\`\n\n\`\`\`\nblah\n\`\`\`\n\n<Inline Image: https://qaup.getguru.com/5240119b-9752-443a-9172-73204f8599eb/94acdc58-32c2-44d3-9843-7a2a5cb3fbf5.bc70afa3-1798-4c87-a2fe-21e3f855e35a.jpeg>\n\n| Column 1 | Column 2 | Column 3  |\n| -------- | -------- | --------  |\n| Foo | Bar | Baz |\n| abc | def | ghi |\n\n';
+var expected = '*Security Overview Header*\n\n*We take the security of your data very seriously!*\n\nIn order to instill the necessary confidence, we wanted to provide full transparency on _why_, _who_, _where_, _when_ and _how_ we protect your data.\n\nGiven the sensitive nature of your content and need to maintain your privacy being a priority for us, we wanted to share the practices and policies we have put into place.\n\n<https://www.getguru.com/privacy/|Privacy Policy>\n\nRemember this list\n\n1. foo\n2. bar\n3. buz\n\nand this list too...\n\n• _abc_\n  • sub 1\n  • sub 2\n\n\n• *def*\n• xyz\n\n\`and this\`\n\n\`\`\`\nblah\n\`\`\`\n\n<Inline Image: https://qaup.getguru.com/5240119b-9752-443a-9172-73204f8599eb/94acdc58-32c2-44d3-9843-7a2a5cb3fbf5.bc70afa3-1798-4c87-a2fe-21e3f855e35a.jpeg>\n\n| Column 1 | Column 2 | Column 3  |\n| -------- | -------- | --------  |\n| Foo | Bar | Baz |\n| abc | def | ghi |\n\n';
 var output = slackify(input);
   t.equals(output,
     expected);
