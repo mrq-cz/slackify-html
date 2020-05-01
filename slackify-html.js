@@ -49,7 +49,7 @@ function walkPre(dom) {
         out += el.data;
       }
       else if ('tag' === el.type) {
-        out += walkPre(el.children);
+        out += walkPre(el.children) + '\n';
       }
     });
   }
