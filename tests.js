@@ -53,6 +53,22 @@ tap.test('test bold text with headers', function boldheaders(t) {
   t.end();
 });
 
+tap.test('test code block', function codeblock(t) {
+  var input = '<pre class="ghq-card-content__code-block" data-ghq-card-content-type="CODE_BLOCK" data-ghq-code-block-syntax="JSON" data-ghq-code-block-prism="json"><code class="ghq-card-content__code-block-line" data-ghq-card-content-type="CODE_BLOCK_LINE">{</code><code class="ghq-card-content__code-block-line" data-ghq-card-content-type="CODE_BLOCK_LINE">  "name": "slackify-html",</code><code class="ghq-card-content__code-block-line" data-ghq-card-content-type="CODE_BLOCK_LINE">  "version": "1.0.0",</code><code class="ghq-card-content__code-block-line" data-ghq-card-content-type="CODE_BLOCK_LINE">  "description": "convert simple html to slack markdown",</code><code class="ghq-card-content__code-block-line" data-ghq-card-content-type="CODE_BLOCK_LINE">  "main": "slackify-html.js",</code><code class="ghq-card-content__code-block-line" data-ghq-card-content-type="CODE_BLOCK_LINE">  "scripts": {</code><code class="ghq-card-content__code-block-line" data-ghq-card-content-type="CODE_BLOCK_LINE">    "test": "tap tests.js"</code><code class="ghq-card-content__code-block-line" data-ghq-card-content-type="CODE_BLOCK_LINE">  }</code><code class="ghq-card-content__code-block-line" data-ghq-card-content-type="CODE_BLOCK_LINE">}</code></pre>';
+  var expected = '```\n{\n  "name": "slackify-html",\n  "version": "1.0.0",\n  "description": "convert simple html to slack markdown",\n  "main": "slackify-html.js",\n  "scripts": {\n    "test": "tap tests.js"\n  }\n}\n```\n';
+  var output = slackify(input);
+  t.equals(output,expected);
+  t.end();
+});
+
+tap.test('test code block text only', function codeblocktextonly(t) {
+  var input = '<pre class="ghq-card-content__code-block" data-ghq-card-content-type="CODE_BLOCK" data-ghq-code-block-syntax="Plain Text" data-ghq-code-block-prism="plain"><code class="ghq-card-content__code-block-line" data-ghq-card-content-type="CODE_BLOCK_LINE">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</code></pre>';
+  var expected = '```\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n```\n';
+  var output = slackify(input);
+  t.equals(output,expected);
+  t.end();
+});
+
 tap.test('full example', function vcheck(t) {
   var input = `<div class="ghq-markdown-content" ><h2>Security <b>Overview</b> Header</h2>
 <p><strong>We take the security of your data very seriously!</strong></p>
@@ -102,7 +118,7 @@ tap.test('full example', function vcheck(t) {
 </tbody>
 </table>
 </div>`;
-var expected = '*Security Overview Header*\n\n*We take the security of your data very seriously!*\n\nIn order to instill the necessary confidence, we wanted to provide full transparency on _why_, _who_, _where_, _when_ and _how_ we protect your data.\n\nGiven the sensitive nature of your content and need to maintain your privacy being a priority for us, we wanted to share the practices and policies we have put into place.\n\n<https://www.getguru.com/privacy/|Privacy Policy>\n\nRemember this list\n\n1. foo\n2. bar\n3. buz\n\nand this list too...\n\n• _abc_\n  • sub 1\n  • sub 2\n\n\n• *def*\n• xyz\n\n\`and this\`\n\n\`\`\`\nblah\n\`\`\`\n\n<Inline Image: https://qaup.getguru.com/5240119b-9752-443a-9172-73204f8599eb/94acdc58-32c2-44d3-9843-7a2a5cb3fbf5.bc70afa3-1798-4c87-a2fe-21e3f855e35a.jpeg>\n\n| Column 1 | Column 2 | Column 3  |\n| -------- | -------- | --------  |\n| Foo | Bar | Baz |\n| abc | def | ghi |\n\n';
+var expected = '*Security Overview Header*\n\n*We take the security of your data very seriously!*\n\nIn order to instill the necessary confidence, we wanted to provide full transparency on _why_, _who_, _where_, _when_ and _how_ we protect your data.\n\nGiven the sensitive nature of your content and need to maintain your privacy being a priority for us, we wanted to share the practices and policies we have put into place.\n\n<https://www.getguru.com/privacy/|Privacy Policy>\n\nRemember this list\n\n1. foo\n2. bar\n3. buz\n\nand this list too...\n\n• _abc_\n  • sub 1\n  • sub 2\n\n\n• *def*\n• xyz\n\n\`and this\`\n\n\`\`\`\nblah\n\n\n\`\`\`\n\n<Inline Image: https://qaup.getguru.com/5240119b-9752-443a-9172-73204f8599eb/94acdc58-32c2-44d3-9843-7a2a5cb3fbf5.bc70afa3-1798-4c87-a2fe-21e3f855e35a.jpeg>\n\n| Column 1 | Column 2 | Column 3  |\n| -------- | -------- | --------  |\n| Foo | Bar | Baz |\n| abc | def | ghi |\n\n';
 var output = slackify(input);
   t.equals(output,
     expected);
