@@ -61,6 +61,14 @@ tap.test('test code block', function codeblock(t) {
   t.end();
 });
 
+tap.test('test code block text only', function codeblocktextonly(t) {
+  var input = '<pre class="ghq-card-content__code-block" data-ghq-card-content-type="CODE_BLOCK" data-ghq-code-block-syntax="Plain Text" data-ghq-code-block-prism="plain"><code class="ghq-card-content__code-block-line" data-ghq-card-content-type="CODE_BLOCK_LINE">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</code></pre>';
+  var expected = '```\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n```\n';
+  var output = slackify(input);
+  t.equals(output,expected);
+  t.end();
+});
+
 tap.test('full example', function vcheck(t) {
   var input = `<div class="ghq-markdown-content" ><h2>Security <b>Overview</b> Header</h2>
 <p><strong>We take the security of your data very seriously!</strong></p>
