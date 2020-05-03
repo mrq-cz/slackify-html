@@ -69,6 +69,18 @@ tap.test('test code block text only', function codeblocktextonly(t) {
   t.end();
 });
 
+tap.test('test blockquote', function blockquote(t) {
+  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote text</blockquote>'), '>block quote text');
+  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <strong class="ghq-card-content__bold" data-ghq-card-content-type="BOLD">bold</strong> text</blockquote>'), '>block quote *bold* text');
+  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <em class="ghq-card-content__italic" data-ghq-card-content-type="ITALIC">italic</em> text</blockquote>'), '>block quote _italic_ text');
+  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <u class="ghq-card-content__underline" style="text-decoration:underline" data-ghq-card-content-type="UNDERLINE">underline</u> text</blockquote>'), '>block quote underline text');
+  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <del class="ghq-card-content__strikethrough" style="text-decoration:line-through" data-ghq-card-content-type="STRIKETHROUGH">strikethrough</del> text</blockquote>'), '>block quote strikethrough text');
+  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <mark class="ghq-card-content__highlight" style="background-color:#fde892" data-ghq-card-content-type="HIGHLIGHT">highlight</mark> text</blockquote>'), '>block quote highlight text');
+  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <span class="ghq-card-content__text-color" style="color:#9013fe" data-ghq-card-content-type="TEXT_COLOR">color</span> text</blockquote>'), '>block quote color text');
+  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE"><code class="ghq-card-content__code-snippet" data-ghq-card-content-type="CODE_SNIPPET">block quote guru code snippet</code></blockquote>'), '>`block quote guru code snippet`');
+  t.end();
+});
+
 tap.test('full example', function vcheck(t) {
   var input = `<div class="ghq-markdown-content" ><h2>Security <b>Overview</b> Header</h2>
 <p><strong>We take the security of your data very seriously!</strong></p>
