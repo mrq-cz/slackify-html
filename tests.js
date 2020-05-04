@@ -70,7 +70,7 @@ tap.test('test code block text only', function codeblocktextonly(t) {
 });
 
 tap.test('test blockquote', function blockquote(t) {
-  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote text</blockquote>'), '>block quote text\n');
+  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote text</blockquote>'), '>block quote text\n\n');
   t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <strong class="ghq-card-content__bold" data-ghq-card-content-type="BOLD">bold</strong> text</blockquote>'), '>block quote *bold* text\n\n');
   t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <em class="ghq-card-content__italic" data-ghq-card-content-type="ITALIC">italic</em> text</blockquote>'), '>block quote _italic_ text\n\n');
   t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <u class="ghq-card-content__underline" style="text-decoration:underline" data-ghq-card-content-type="UNDERLINE">underline</u> text</blockquote>'), '>block quote underline text\n\n');
