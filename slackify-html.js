@@ -262,7 +262,7 @@ function walk(dom, nesting) {
             out += '<Inline Image' + (alt !== '' ? '('+alt+')' : '') + ': ' + el.attribs.src + '>';
             break;
           case 'blockquote':
-            out += '>' + walk(el.children);
+            out += '>' + walk(el.children) + '\n';
             break;
           default:
             out += walk(el.children);
