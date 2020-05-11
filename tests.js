@@ -69,7 +69,22 @@ tap.test('test code block text only', function codeblocktextonly(t) {
   t.end();
 });
 
-tap.test('test blockquote', function blockquote(t) {
+tap.test('test blockquote with line breaks/new lines', function blockquotenewlines(t) {
+  t.equals(slackify('<blockquote>block quote with <br>line<br>breaks</blockquote>'), '>block quote with \n>line\n>breaks\n\n');
+  t.equals(slackify('<blockquote>block quote with embedded\n\n newlines</blockquote>'), '>block quote with embedded\n>\n> newlines\n\n');
+  t.equals(slackify('<blockquote>block quote with trailing newlines\n\n</blockquote>'), '>block quote with trailing newlines\n>\n\n');
+  t.end();
+});
+
+tap.test('test blockquote with paragraphs and line breaks/new lines', function blockquoteparagraphs(t) {
+  t.equals(slackify('<blockquote><p>paragraph in blockquote</p></blockquote>'), '>paragraph in blockquote\n\n');
+  t.equals(slackify('<blockquote><p>paragraph<br>with<br>line break blockquote</p></blockquote>'), '>paragraph\n>with\n>line break blockquote\n\n');
+  t.equals(slackify('<blockquote><p>paragraph block quote with embedded\n\n newlines</p></blockquote>'), '>paragraph block quote with embedded\n>\n> newlines\n\n');
+  t.equals(slackify('<blockquote><p>paragraph block quote with trailing newlines\n\n</p></blockquote>'), '>paragraph block quote with trailing newlines\n>\n>\n\n');
+  t.end();
+})
+
+tap.test('test guru blockquote', function blockquote(t) {
   t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote text</blockquote>'), '>block quote text\n\n');
   t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <strong class="ghq-card-content__bold" data-ghq-card-content-type="BOLD">bold</strong> text</blockquote>'), '>block quote *bold* text\n\n');
   t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <em class="ghq-card-content__italic" data-ghq-card-content-type="ITALIC">italic</em> text</blockquote>'), '>block quote _italic_ text\n\n');
@@ -80,7 +95,6 @@ tap.test('test blockquote', function blockquote(t) {
   t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <a href="https://google.com" target="_blank" rel="noopener noreferrer" class="ghq-card-content__link" data-ghq-card-content-type="LINK">link</a></blockquote>'), '>block quote <https://google.com|link>\n\n');
   t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <a target="_blank" rel="noopener noreferrer" class="ghq-card-content__file" data-ghq-card-content-type="FILE">file</a></blockquote>'), '>block quote file\n\n');
   t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE"><code class="ghq-card-content__code-snippet" data-ghq-card-content-type="CODE_SNIPPET">block quote guru code snippet</code></blockquote>'), '>`block quote guru code snippet`\n\n');
-  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote with trailing newlines\n\n</blockquote>'), '>block quote with trailing newlines\n\n\n\n');
   t.end();
 });
 
