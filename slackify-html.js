@@ -268,8 +268,9 @@ function walk(dom, nesting) {
             contentArr.forEach((item) => {
               if (el.name === 'br' || el.name === 'p') {
                 innerOutput += '>' + item;
+              } else {
+                innerOutput += '>' + item + '\n';
               }
-              innerOutput += '>' + item + '\n';
             });
             if (innerOutput.endsWith('\n>\n')) {
               innerOutput = innerOutput.substr(0, innerOutput.length - 2);
