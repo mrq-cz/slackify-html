@@ -69,13 +69,41 @@ tap.test('test code block text only', function codeblocktextonly(t) {
   t.end();
 });
 
+tap.test('test blockquote with line breaks/new lines', function blockquotenewlines(t) {
+  t.equals(slackify('<blockquote>block quote with <br>line<br>breaks</blockquote>'), '>block quote with \n>line\n>breaks\n\n');
+  t.equals(slackify('<blockquote>block quote with embedded\n\n newlines</blockquote>'), '>block quote with embedded\n>\n> newlines\n\n');
+  t.equals(slackify('<blockquote>block quote with trailing newlines\n\n</blockquote>'), '>block quote with trailing newlines\n>\n\n');
+  t.end();
+});
+
+tap.test('test blockquote with paragraphs and line breaks/new lines', function blockquoteparagraphs(t) {
+  t.equals(slackify('<blockquote><p>paragraph in blockquote</p></blockquote>'), '>paragraph in blockquote\n\n');
+  t.equals(slackify('<blockquote><p>paragraph<br>with<br>line break blockquote</p></blockquote>'), '>paragraph\n>with\n>line break blockquote\n\n');
+  t.equals(slackify('<blockquote><p>paragraph block quote with embedded\n\n newlines</p></blockquote>'), '>paragraph block quote with embedded\n>\n> newlines\n\n');
+  t.equals(slackify('<blockquote><p>paragraph block quote with trailing newlines\n\n</p></blockquote>'), '>paragraph block quote with trailing newlines\n>\n>\n\n');
+  t.end();
+})
+
+tap.test('test guru blockquote', function blockquote(t) {
+  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote text</blockquote>'), '>block quote text\n\n');
+  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <strong class="ghq-card-content__bold" data-ghq-card-content-type="BOLD">bold</strong> text</blockquote>'), '>block quote *bold* text\n\n');
+  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <em class="ghq-card-content__italic" data-ghq-card-content-type="ITALIC">italic</em> text</blockquote>'), '>block quote _italic_ text\n\n');
+  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <u class="ghq-card-content__underline" style="text-decoration:underline" data-ghq-card-content-type="UNDERLINE">underline</u> text</blockquote>'), '>block quote underline text\n\n');
+  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <del class="ghq-card-content__strikethrough" style="text-decoration:line-through" data-ghq-card-content-type="STRIKETHROUGH">strikethrough</del> text</blockquote>'), '>block quote strikethrough text\n\n');
+  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <mark class="ghq-card-content__highlight" style="background-color:#fde892" data-ghq-card-content-type="HIGHLIGHT">highlight</mark> text</blockquote>'), '>block quote highlight text\n\n');
+  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <span class="ghq-card-content__text-color" style="color:#9013fe" data-ghq-card-content-type="TEXT_COLOR">color</span> text</blockquote>'), '>block quote color text\n\n');
+  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <a href="https://google.com" target="_blank" rel="noopener noreferrer" class="ghq-card-content__link" data-ghq-card-content-type="LINK">link</a></blockquote>'), '>block quote <https://google.com|link>\n\n');
+  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE">block quote <a target="_blank" rel="noopener noreferrer" class="ghq-card-content__file" data-ghq-card-content-type="FILE">file</a></blockquote>'), '>block quote file\n\n');
+  t.equals(slackify('<blockquote class="ghq-card-content__block-quote" data-ghq-card-content-type="BLOCK_QUOTE"><code class="ghq-card-content__code-snippet" data-ghq-card-content-type="CODE_SNIPPET">block quote guru code snippet</code></blockquote>'), '>`block quote guru code snippet`\n\n');
+  t.end();
+});
+
 tap.test('full example', function vcheck(t) {
   var input = `<div class="ghq-markdown-content" ><h2>Security <b>Overview</b> Header</h2>
 <p><strong>We take the security of your data very seriously!</strong></p>
 <p>In order to instill the necessary confidence, we wanted to provide full transparency on <em>why</em>, <em>who</em>, <em>where</em>, <em>when</em> and <em>how</em> we protect your data.</p>
 <p>Given the sensitive nature of your content and need to maintain your privacy being a priority for us, we wanted to share the practices and policies we have put into place.</p>
-<p><a href="https://www.getguru.com/privacy/" target="_blank">Privacy Policy</a></p>
-<p>Remember this list</p>
+<p><a href="https://www.getguru.com/privacy/" target="_blank">Privacy Policy</a></p><blockquote>Here's a test blockquote<strong> with bolded </strong>information</blockquote><p>Remember this list</p>
 <ol>
 <li>foo</li>
 <li>bar</li>
@@ -118,7 +146,7 @@ tap.test('full example', function vcheck(t) {
 </tbody>
 </table>
 </div>`;
-var expected = '*Security Overview Header*\n\n*We take the security of your data very seriously!*\n\nIn order to instill the necessary confidence, we wanted to provide full transparency on _why_, _who_, _where_, _when_ and _how_ we protect your data.\n\nGiven the sensitive nature of your content and need to maintain your privacy being a priority for us, we wanted to share the practices and policies we have put into place.\n\n<https://www.getguru.com/privacy/|Privacy Policy>\n\nRemember this list\n\n1. foo\n2. bar\n3. buz\n\nand this list too...\n\n• _abc_\n  • sub 1\n  • sub 2\n\n\n• *def*\n• xyz\n\n\`and this\`\n\n\`\`\`\nblah\n\n\n\`\`\`\n\n<Inline Image: https://qaup.getguru.com/5240119b-9752-443a-9172-73204f8599eb/94acdc58-32c2-44d3-9843-7a2a5cb3fbf5.bc70afa3-1798-4c87-a2fe-21e3f855e35a.jpeg>\n\n| Column 1 | Column 2 | Column 3  |\n| -------- | -------- | --------  |\n| Foo | Bar | Baz |\n| abc | def | ghi |\n\n';
+var expected = '*Security Overview Header*\n\n*We take the security of your data very seriously!*\n\nIn order to instill the necessary confidence, we wanted to provide full transparency on _why_, _who_, _where_, _when_ and _how_ we protect your data.\n\nGiven the sensitive nature of your content and need to maintain your privacy being a priority for us, we wanted to share the practices and policies we have put into place.\n\n<https://www.getguru.com/privacy/|Privacy Policy>\n>Here\'s a test blockquote *with bolded* information\n\nRemember this list\n\n1. foo\n2. bar\n3. buz\n\nand this list too...\n\n• _abc_\n  • sub 1\n  • sub 2\n\n\n• *def*\n• xyz\n\n\`and this\`\n\n\`\`\`\nblah\n\n\n\`\`\`\n\n<Inline Image: https://qaup.getguru.com/5240119b-9752-443a-9172-73204f8599eb/94acdc58-32c2-44d3-9843-7a2a5cb3fbf5.bc70afa3-1798-4c87-a2fe-21e3f855e35a.jpeg>\n\n| Column 1 | Column 2 | Column 3  |\n| -------- | -------- | --------  |\n| Foo | Bar | Baz |\n| abc | def | ghi |\n\n';
 var output = slackify(input);
   t.equals(output,
     expected);

@@ -261,6 +261,22 @@ function walk(dom, nesting) {
             var alt = el.attribs.alt;
             out += '<Inline Image' + (alt !== '' ? '('+alt+')' : '') + ': ' + el.attribs.src + '>';
             break;
+          case 'blockquote':
+            content = walk(el.children);
+            var innerOutput = '';
+            var contentArr = content.split('\n');
+            contentArr.forEach((item) => {
+              if (el.name === 'br' || el.name === 'p') {
+                innerOutput += '>' + item;
+              } else {
+                innerOutput += '>' + item + '\n';
+              }
+            });
+            if (innerOutput.endsWith('\n>\n')) {
+              innerOutput = innerOutput.substr(0, innerOutput.length - 2);
+            }
+            out += innerOutput + '\n';
+            break;
           default:
             out += walk(el.children);
         }
