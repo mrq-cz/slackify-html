@@ -7,5 +7,8 @@ example usage:
 var slackify = require('slackify-html');
 
 var text = slackify('this <a href="http://github.com">link</a> is <b>important</b>');
-// text variable contains 'this <http://github.com|link> is *important*' 
+// text variable contains 'this <http://github.com|link> is *important*'
 ```
+
+### How to setup repo and test locally
+https://app.getguru.com/card/TqGjya8c/slackifyhtml-basic-setup
