@@ -115,10 +115,10 @@ function walkTableBody(dom) {
         out += el.data;
       }
       else if ('td' === el.name) {
-        out += '| ' + walk(el.children) + ' ';
+        out += "| " + walk(el.children, 0, true) + " ";
       }
       else if ('tr' === el.name) {
-        out += walkTableBody(el.children) + '|\n';
+        out += walkTableBody(el.children).replace(/\n/gi, " ") + "|\n";
       }
     });
   }

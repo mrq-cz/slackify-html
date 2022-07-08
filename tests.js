@@ -147,8 +147,21 @@ tap.test('full example', function vcheck(t) {
 </table>
 </div>`;
 var expected = '*Security Overview Header*\n\n*We take the security of your data very seriously!*\n\nIn order to instill the necessary confidence, we wanted to provide full transparency on _why_, _who_, _where_, _when_ and _how_ we protect your data.\n\nGiven the sensitive nature of your content and need to maintain your privacy being a priority for us, we wanted to share the practices and policies we have put into place.\n\n<https://www.getguru.com/privacy/|Privacy Policy>\n>Here\'s a test blockquote *with bolded* information\n\nRemember this list\n\n1. foo\n2. bar\n3. buz\n\nand this list too...\n\n• _abc_\n  • sub 1\n  • sub 2\n\n\n• *def*\n• xyz\n\n\`and this\`\n\n\`\`\`\nblah\n\n\n\`\`\`\n\n<Inline Image: https://qaup.getguru.com/5240119b-9752-443a-9172-73204f8599eb/94acdc58-32c2-44d3-9843-7a2a5cb3fbf5.bc70afa3-1798-4c87-a2fe-21e3f855e35a.jpeg>\n\n| Column 1 | Column 2 | Column 3  |\n| -------- | -------- | --------  |\n| Foo | Bar | Baz |\n| abc | def | ghi |\n\n';
-var output = slackify(input);
+  var output = slackify(input);
   t.equals(output,
     expected);
+  t.end();
+});
+
+
+
+tap.test("tables with paragraph", function vcheck(t) {
+  var input = '<table class="ghq-card-content__table" data-ghq-card-content-type="TABLE" data-ghq-card-content-is-full-width="false" data-ghq-table-header="false" data-ghq-table-column-widths="160,160,160"><colgroup><col style="width:550px"><col style="width:160px"><col style="width:160px"></colgroup><tbody class="ghq-card-content__table-body"><tr class="ghq-card-content__table-row" data-ghq-card-content-type="TABLE_ROW"><td class="ghq-card-content__table-cell" data-ghq-card-content-type="TABLE_CELL"><p class="ghq-card-content__paragraph" data-ghq-card-content-type="paragraph">one</p></td><td class="ghq-card-content__table-cell" data-ghq-card-content-type="TABLE_CELL"><p class="ghq-card-content__paragraph" data-ghq-card-content-type="paragraph">dwqtwo</p></td><td class="ghq-card-content__table-cell" data-ghq-card-content-type="TABLE_CELL"><p class="ghq-card-content__paragraph" data-ghq-card-content-type="paragraph">three</p></td></tr><tr class="ghq-card-content__table-row" data-ghq-card-content-type="TABLE_ROW"><td class="ghq-card-content__table-cell" data-ghq-card-content-type="TABLE_CELL"><p class="ghq-card-content__paragraph" data-ghq-card-content-type="paragraph">dwqdwq</p></td><td class="ghq-card-content__table-cell" data-ghq-card-content-type="TABLE_CELL"><p class="ghq-card-content__paragraph" data-ghq-card-content-type="paragraph">dwqdwqdwq</p></td><td class="ghq-card-content__table-cell" data-ghq-card-content-type="TABLE_CELL"><p class="ghq-card-content__paragraph" data-ghq-card-content-type="paragraph">dwqdwqdwqdwq</p></td></tr></tbody></table>'
+  var expected = `| one  | dwqtwo  | three  |
+| dwqdwq  | dwqdwqdwq  | dwqdwqdwqdwq  |
+`;
+
+  var output = slackify(input);
+  t.equal(output, expected);
   t.end();
 });
