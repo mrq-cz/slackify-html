@@ -4,7 +4,7 @@
   "description": "convert simple html to slack markdown",
   "main": "slackify-html.js",
   "scripts": {
-    "test": "tap tests.js"
+    "test": "jest test.js"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
     "htmlparser": "^1.7.7"
   },
   "devDependencies": {
+    "jest": "^29.3.1",
     "tap": "^14.10.7"
   }
 }

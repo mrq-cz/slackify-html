@@ -1,5 +1,5 @@
-var htmlparser = require('htmlparser'),
-    Entities = require('html-entities').AllHtmlEntities;
+var htmlparser = require("htmlparser"),
+  Entities = require("html-entities").AllHtmlEntities;
 
 entities = new Entities();
 
@@ -10,30 +10,37 @@ module.exports = function slackify(html) {
   var parser = new htmlparser.Parser(handler);
   parser.parseComplete(html);
   var dom = handler.dom;
-  if (dom)
-    return entities.decode(walk(dom));
-  else
-    return '';
+  if (dom) return entities.decode(walk(dom));
+  else return "";
 };
 
 function walkList(dom, ordered, nesting, start) {
-  var out = '';
+  var out = "";
   if (dom) {
     var listItemIndex = start ? start : 1;
     dom.forEach(function (el) {
-      if ('text' === el.type && el.data.trim() !== '') {
+      if ("text" === el.type && el.data.trim() !== "") {
         out += el.data;
-      }
-      else if ('tag' === el.type) {
+      } else if ("tag" === el.type) {
         switch (el.name) {
-          case 'li':
-            for (i=0; i < nesting * 2; i++) {
-              out += ' ';
+          case "li":
+            // Add indentation based on the nesting level
+            for (i = 0; i < nesting * 2; i++) {
+              out += " ";
             }
-            out += (ordered ? listItemIndex++ + '. ' : "• ") + walk(el.children, nesting + 1) + '\n';
+            // Add the bullet or number, followed by the text content of the li element
+            out +=
+              (ordered ? listItemIndex++ + ". " : "• ") +
+              walkList(el.children, ordered, nesting) +
+              "\n";
+            break;
+          case "p":
+            // Add the text content of the p element
+            out += walkList(el.children, ordered, nesting) + "\n";
             break;
           default:
-            out += walk(el.children, nesting + 1);
+            // Recursively process the children of the element
+            out += walkList(el.children, ordered, nesting + 1);
         }
       }
     });
@@ -42,14 +49,13 @@ function walkList(dom, ordered, nesting, start) {
 }
 
 function walkPre(dom) {
-  var out = '';
+  var out = "";
   if (dom) {
     dom.forEach(function (el) {
-      if ('text' === el.type) {
+      if ("text" === el.type) {
         out += el.data;
-      }
-      else if ('tag' === el.type) {
-        out += walkPre(el.children) + '\n';
+      } else if ("tag" === el.type) {
+        out += walkPre(el.children) + "\n";
       }
     });
   }
@@ -57,14 +63,13 @@ function walkPre(dom) {
 }
 
 function walkTable(dom) {
-  var out = '';
+  var out = "";
   if (dom) {
     dom.forEach(function (el) {
-      if ('tag' === el.type) {
-        if ('thead' === el.name) {
+      if ("tag" === el.type) {
+        if ("thead" === el.name) {
           out += walkTableHead(el.children);
-        }
-        else if ('tbody' === el.name) {
+        } else if ("tbody" === el.name) {
           out += walkTableBody(el.children);
         }
       }
@@ -75,32 +80,30 @@ function walkTable(dom) {
 }
 
 function walkTableHead(dom) {
-  var out = '';
+  var out = "";
   if (dom) {
     var headers = [];
     dom.forEach(function (el) {
-      if ('text' === el.type && el.data.trim() !== '') {
+      if ("text" === el.type && el.data.trim() !== "") {
         out += el.data;
-      }
-      else if ('tr' === el.name) {
+      } else if ("tr" === el.name) {
         out += walkTableHead(el.children);
-      }
-      else if ('th' === el.name) {
+      } else if ("th" === el.name) {
         var header = walkTableHead(el.children);
         headers.push(header);
-        out += '| ' + header + ' ';
+        out += "| " + header + " ";
       }
     });
     if (headers.length > 0) {
-      out += ' |\n';
+      out += " |\n";
       headers.forEach(function (item) {
-        out += '| ';
+        out += "| ";
         for (i = 0; i < item.length; i++) {
-          out += '-';
+          out += "-";
         }
-        out += ' ';
+        out += " ";
       });
-      out += ' |\n';
+      out += " |\n";
     }
   }
 
@@ -108,16 +111,14 @@ function walkTableHead(dom) {
 }
 
 function walkTableBody(dom) {
-  var out = '';
+  var out = "";
   if (dom) {
     dom.forEach(function (el) {
-      if ('text' === el.type && el.data.trim() !== '') {
+      if ("text" === el.type && el.data.trim() !== "") {
         out += el.data;
-      }
-      else if ('td' === el.name) {
+      } else if ("td" === el.name) {
         out += "| " + walk(el.children, 0, true) + " ";
-      }
-      else if ('tr' === el.name) {
+      } else if ("tr" === el.name) {
         out += walkTableBody(el.children).replace(/\n/gi, " ") + "|\n";
       }
     });
@@ -129,153 +130,165 @@ function walk(dom, nesting) {
   if (!nesting) {
     nesting = 0;
   }
-  var out = '';
+  var out = "";
   if (dom)
     dom.forEach(function (el) {
-      if ('text' === el.type) {
+      if ("text" === el.type) {
         out += el.data;
-      }
-      else if ('tag' === el.type) {
+      } else if ("tag" === el.type) {
         switch (el.name) {
-          case 'a':
+          case "a":
             if (el.attribs && el.attribs.href) {
-              out += '<' + el.attribs.href + '|' + walk(el.children) + '>';
-            }
-            else {
+              out += "<" + el.attribs.href + "|" + walk(el.children) + ">";
+            } else {
               out += walk(el.children);
             }
             break;
-          case 'h1':
-          case 'h2':
-          case 'h3':
-          case 'h4':
-          case 'strong':
-          case 'b':
+          case "h1":
+          case "h2":
+          case "h3":
+          case "h4":
+          case "strong":
+          case "b":
             content = walk(el.children);
-            var contentArr = content.split('\n');
-            var innerOutput = '';
-            for (var i=0; i<contentArr.length; i++) {
+            var contentArr = content.split("\n");
+            var innerOutput = "";
+            for (var i = 0; i < contentArr.length; i++) {
               content = contentArr[i];
-              if (content.trim() !== '') {
+              if (content.trim() !== "") {
                 var prefixSpace = false;
                 var suffixSpace = false;
-                if (content && content.charAt(0) === ' ') {
+                if (content && content.charAt(0) === " ") {
                   content = content.substr(1, content.length);
                   prefixSpace = true;
                 }
-                if (content && content.charAt(content.length - 1) === ' ') {
+                if (content && content.charAt(content.length - 1) === " ") {
                   content = content.substr(0, content.length - 1);
                   suffixSpace = true;
                 }
                 if (prefixSpace) {
-                  innerOutput += ' ';
+                  innerOutput += " ";
                 }
-                if (el.name === 'h1' || el.name === 'h2' || el.name === 'h3' || el.name === 'h4') {
-                  content = content.replace(/\*/g, '');
-                  innerOutput += '*' + content + '*';
-                }
-                else if (content.charAt(0) === '*' && content.charAt(content.length - 1) === '*') {
+                if (
+                  el.name === "h1" ||
+                  el.name === "h2" ||
+                  el.name === "h3" ||
+                  el.name === "h4"
+                ) {
+                  content = content.replace(/\*/g, "");
+                  innerOutput += "*" + content + "*";
+                } else if (
+                  content.charAt(0) === "*" &&
+                  content.charAt(content.length - 1) === "*"
+                ) {
                   innerOutput += content;
-                }
-                else {
-                  innerOutput += '*' + content + '*';
+                } else {
+                  innerOutput += "*" + content + "*";
                 }
                 if (suffixSpace) {
-                  innerOutput += ' ';
+                  innerOutput += " ";
                 }
               }
               if (i < contentArr.length - 1) {
-                innerOutput += '\n';
+                innerOutput += "\n";
               }
             }
             out += innerOutput;
 
             switch (el.name) {
-              case 'h1':
-              case 'h2':
-              case 'h3':
-              case 'h4':
-                out += '\n';
+              case "h1":
+              case "h2":
+              case "h3":
+              case "h4":
+                out += "\n";
                 break;
             }
             break;
-          case 'i':
-          case 'em':
+          case "i":
+          case "em":
             content = walk(el.children);
-            var contentArr = content.split('\n');
-            var innerOutput = '';
-            for (var i=0; i<contentArr.length; i++) {
+            var contentArr = content.split("\n");
+            var innerOutput = "";
+            for (var i = 0; i < contentArr.length; i++) {
               content = contentArr[i];
-              if (content.trim() !== '') {
+              if (content.trim() !== "") {
                 var prefixSpace = false;
                 var suffixSpace = false;
-                if (content && content.charAt(0) === ' ') {
+                if (content && content.charAt(0) === " ") {
                   content = content.substr(1, content.length);
                   prefixSpace = true;
                 }
-                if (content && content.charAt(content.length - 1) === ' ') {
+                if (content && content.charAt(content.length - 1) === " ") {
                   content = content.substr(0, content.length - 1);
                   suffixSpace = true;
                 }
                 if (prefixSpace) {
-                  innerOutput += ' ';
+                  innerOutput += " ";
                 }
-                innerOutput += '_' + content + '_';
+                innerOutput += "_" + content + "_";
                 if (suffixSpace) {
-                  innerOutput += ' ';
+                  innerOutput += " ";
                 }
                 out += innerOutput;
               }
               if (i < contentArr.length - 1) {
-                out += '\n';
+                out += "\n";
               }
             }
             break;
-          case 'div':
+          case "div":
             out += walk(el.children);
-            if (el.attribs && el.attribs.class === 'ghq-card-content__paragraph') {
-              out += '\n';
+            if (
+              el.attribs &&
+              el.attribs.class === "ghq-card-content__paragraph"
+            ) {
+              out += "\n";
             }
             break;
-          case 'p':
-            out += walk(el.children) + '\n';
+          case "p":
+            out += walk(el.children) + "\n";
             break;
-          case 'br':
-            out += walk(el.children) + '\n';
+          case "br":
+            out += walk(el.children) + "\n";
             break;
-          case 'ol':
-          case 'ul':
-            var startIndex = (el.attribs) ? el.attribs.start : false;
-            out += walkList(el.children, 'ol' === el.name, nesting, startIndex);
+          case "ol":
+          case "ul":
+            var startIndex = el.attribs ? el.attribs.start : false;
+            out += walkList(el.children, "ol" === el.name, nesting, startIndex);
             break;
-          case 'code':
-            out += '`' + walk(el.children) + '`';
+          case "code":
+            out += "`" + walk(el.children) + "`";
             break;
-          case 'pre':
-            out += '```\n' + walkPre(el.children) + '```\n';
+          case "pre":
+            out += "```\n" + walkPre(el.children) + "```\n";
             break;
-          case 'table':
+          case "table":
             out += walkTable(el.children);
             break;
-          case 'img':
+          case "img":
             var alt = el.attribs.alt;
-            out += '<Inline Image' + (alt !== '' ? '('+alt+')' : '') + ': ' + el.attribs.src + '>';
+            out +=
+              "<Inline Image" +
+              (alt !== "" ? "(" + alt + ")" : "") +
+              ": " +
+              el.attribs.src +
+              ">";
             break;
-          case 'blockquote':
+          case "blockquote":
             content = walk(el.children);
-            var innerOutput = '';
-            var contentArr = content.split('\n');
+            var innerOutput = "";
+            var contentArr = content.split("\n");
             contentArr.forEach((item) => {
-              if (el.name === 'br' || el.name === 'p') {
-                innerOutput += '>' + item;
+              if (el.name === "br" || el.name === "p") {
+                innerOutput += ">" + item;
               } else {
-                innerOutput += '>' + item + '\n';
+                innerOutput += ">" + item + "\n";
               }
             });
-            if (innerOutput.endsWith('\n>\n')) {
+            if (innerOutput.endsWith("\n>\n")) {
               innerOutput = innerOutput.substr(0, innerOutput.length - 2);
             }
-            out += innerOutput + '\n';
+            out += innerOutput + "\n";
             break;
           default:
             out += walk(el.children);
