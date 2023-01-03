@@ -14,7 +14,6 @@ module.exports = function slackify(html) {
   if (dom) return entities.decode(walk(dom));
   else return "";
 };
-m;
 
 function walkList(dom, ordered, nesting, start) {
   var out = "";
