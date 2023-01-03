@@ -10,9 +10,11 @@ module.exports = function slackify(html) {
   var parser = new htmlparser.Parser(handler);
   parser.parseComplete(html);
   var dom = handler.dom;
+  console.log("I am in the my changes");
   if (dom) return entities.decode(walk(dom));
   else return "";
 };
+m;
 
 function walkList(dom, ordered, nesting, start) {
   var out = "";
@@ -25,7 +27,7 @@ function walkList(dom, ordered, nesting, start) {
         switch (el.name) {
           case "li":
             // Add indentation based on the nesting level
-            for (i = 0; i < nesting * 2; i++) {
+            for (i = 0; i < nesting * 5; i++) {
               out += " ";
             }
             // Add the bullet or number, followed by the text content of the li element
