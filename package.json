@@ -29,7 +29,6 @@
     "htmlparser": "^1.7.7"
   },
   "devDependencies": {
-    "jest": "^29.3.1",
-    "tap": "^14.10.7"
+    "jest": "^29.3.1"
   }
 }
