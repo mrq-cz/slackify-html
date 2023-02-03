@@ -38,6 +38,96 @@ function walkList(dom, ordered, nesting, start) {
             // Add the text content of the p element
             out += walkList(el.children, ordered, nesting) + "\n";
             break;
+          case "a":
+            if (el.attribs && el.attribs.href) {
+              out += "<" + el.attribs.href + "|" + walkList(el.children) + "> ";
+            } else {
+              out += walkList(el.children);
+            }
+            break;
+          case "code":
+            out += "`" + walkList(el.children) + "` ";
+            break;
+          case "del":
+            out += "~" + walkList(el.children) + "~ ";
+            break;
+          case "strong":
+            content = walkList(el.children);
+            var contentArr = content.split("\n");
+            var innerOutput = "";
+            for (var i = 0; i < contentArr.length; i++) {
+              content = contentArr[i];
+              if (content.trim() !== "") {
+                var prefixSpace = false;
+                var suffixSpace = false;
+                if (content && content.charAt(0) === " ") {
+                  content = content.substr(1, content.length);
+                  prefixSpace = true;
+                }
+                if (content && content.charAt(content.length - 1) === " ") {
+                  content = content.substr(0, content.length - 1);
+                  suffixSpace = true;
+                }
+                if (prefixSpace) {
+                  innerOutput += " ";
+                }
+                if (
+                  el.name === "h1" ||
+                  el.name === "h2" ||
+                  el.name === "h3" ||
+                  el.name === "h4"
+                ) {
+                  content = content.replace(/\*/g, "");
+                  innerOutput += "*" + content + "*";
+                } else if (
+                  content.charAt(0) === "*" &&
+                  content.charAt(content.length - 1) === "*"
+                ) {
+                  innerOutput += content;
+                } else {
+                  innerOutput += "*" + content + "*";
+                }
+                if (suffixSpace) {
+                  innerOutput += " ";
+                }
+              }
+              if (i < contentArr.length - 1) {
+                innerOutput += "\n";
+              }
+            }
+            out += innerOutput + " ";
+            break;
+          case "em":
+            content = walkList(el.children);
+            var contentArr = content.split("\n");
+            var innerOutput = "";
+            for (var i = 0; i < contentArr.length; i++) {
+              content = contentArr[i];
+              if (content.trim() !== "") {
+                var prefixSpace = false;
+                var suffixSpace = false;
+                if (content && content.charAt(0) === " ") {
+                  content = content.substr(1, content.length);
+                  prefixSpace = true;
+                }
+                if (content && content.charAt(content.length - 1) === " ") {
+                  content = content.substr(0, content.length - 1);
+                  suffixSpace = true;
+                }
+                if (prefixSpace) {
+                  innerOutput += " ";
+                }
+                innerOutput += "_" + content + "_";
+                if (suffixSpace) {
+                  innerOutput += " ";
+                }
+                out += innerOutput + " ";
+              }
+              if (i < contentArr.length - 1) {
+                out += "\n";
+              }
+            }
+            break;
           default:
             // Recursively process the children of the element
             out += walkList(el.children, ordered, nesting + 1);
@@ -289,6 +379,9 @@ function walk(dom, nesting) {
               innerOutput = innerOutput.substr(0, innerOutput.length - 2);
             }
             out += innerOutput + "\n";
+            break;
+          case "del":
+            out += "~" + walkList(el.children) + "~";
             break;
           default:
             out += walk(el.children);
