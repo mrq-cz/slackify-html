@@ -72,14 +72,6 @@ function walkList(dom, ordered, nesting, start) {
                   innerOutput += " ";
                 }
                 if (
-                  el.name === "h1" ||
-                  el.name === "h2" ||
-                  el.name === "h3" ||
-                  el.name === "h4"
-                ) {
-                  content = content.replace(/\*/g, "");
-                  innerOutput += "*" + content + "*";
-                } else if (
                   content.charAt(0) === "*" &&
                   content.charAt(content.length - 1) === "*"
                 ) {
