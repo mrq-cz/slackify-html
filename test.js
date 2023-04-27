@@ -238,13 +238,6 @@ describe("Slackify HTML", () => {
         const expected = "1. test 1\n2. test 2\n3. test 3\n\n";
         expect(slackify(input)).toBe(expected);
       });
-      it("should handle nested <ol> tags appropriately", () => {
-        const input =
-          '<ol start="1" class="ghq-card-content__numbered-list" data-ghq-card-content-type="NUMBERED_LIST"><li class="ghq-card-content__numbered-list-item" data-ghq-card-content-type="NUMBERED_LIST_ITEM"><p class="ghq-card-content__paragraph" data-ghq-card-content-type="paragraph">hi</p><ol start="1" class="ghq-card-content__numbered-list" data-ghq-card-content-type="NUMBERED_LIST"><li class="ghq-card-content__numbered-list-item" data-ghq-card-content-type="NUMBERED_LIST_ITEM"><p class="ghq-card-content__paragraph" data-ghq-card-content-type="paragraph">hello</p><ol start="1" class="ghq-card-content__numbered-list" data-ghq-card-content-type="NUMBERED_LIST"><li class="ghq-card-content__numbered-list-item" data-ghq-card-content-type="NUMBERED_LIST_ITEM"><p class="ghq-card-content__paragraph" data-ghq-card-content-type="paragraph">TEST</p></li><li class="ghq-card-content__numbered-list-item" data-ghq-card-content-type="NUMBERED_LIST_ITEM"><p class="ghq-card-content__paragraph" data-ghq-card-content-type="paragraph">test1</p></li></ol></li><li class="ghq-card-content__numbered-list-item" data-ghq-card-content-type="NUMBERED_LIST_ITEM"><p class="ghq-card-content__paragraph" data-ghq-card-content-type="paragraph">hellpo 1</p></li></ol></li><li class="ghq-card-content__numbered-list-item" data-ghq-card-content-type="NUMBERED_LIST_ITEM"><p class="ghq-card-content__paragraph" data-ghq-card-content-type="paragraph">basd</p></li></ol>';
-        const expected = "";
-
-        // expect(slackify(input)).toBe(expected);
-      });
     });
 
     describe("New editor HTML", () => {
@@ -280,14 +273,6 @@ describe("Slackify HTML", () => {
           "• regular `codeblock` *bold* _italicized_ <https://github.com/guruhq/guru-ui/pull/7319/files|hyperlink> ~strikethrough~ \n• ~strikethrough~ \n• _ITALICIZED TEXT_ \n• *BOLDED TEXT* \n• *_`EVERYTHING`_ *  \n• <http://google.com|HYPERLINK> \n\n";
 
         expect(slackify(input)).toBe(expected);
-      });
-      it("should handle nested <ol> tags appropriately", () => {
-        const input =
-          '<ol class="ghq-card-content__numbered-list" data-ghq-card-content-type="NUMBERED_LIST" start="1"><li class="ghq-card-content__numbered-list-item" data-ghq-card-content-type="NUMBERED_LIST_ITEM">1st item</li><ol class="ghq-card-content__numbered-list" data-ghq-card-content-type="NUMBERED_LIST" start="1"><li class="ghq-card-content__numbered-list-item" data-ghq-card-content-type="NUMBERED_LIST_ITEM">item 1a</li><ol class="ghq-card-content__numbered-list" data-ghq-card-content-type="NUMBERED_LIST" start="1"><li class="ghq-card-content__numbered-list-item" data-ghq-card-content-type="NUMBERED_LIST_ITEM">item 1ai</li><ol class="ghq-card-content__numbered-list" data-ghq-card-content-type="NUMBERED_LIST" start="1"><li class="ghq-card-content__numbered-list-item" data-ghq-card-content-type="NUMBERED_LIST_ITEM">item 1ai1</li></ol><li class="ghq-card-content__numbered-list-item" data-ghq-card-content-type="NUMBERED_LIST_ITEM">item 1aii</li><li class="ghq-card-content__numbered-list-item" data-ghq-card-content-type="NUMBERED_LIST_ITEM">item 1aiii</li></ol><li class="ghq-card-content__numbered-list-item" data-ghq-card-content-type="NUMBERED_LIST_ITEM">item 1b</li></ol><li class="ghq-card-content__numbered-list-item" data-ghq-card-content-type="NUMBERED_LIST_ITEM">2nd item</li></ol><p class="ghq-card-content__paragraph ghq-is-empty" data-ghq-card-content-type="paragraph"></p>';
-        const expected =
-          "1. item1a\n  1. item1ai\n    • 3rd level\n      • 4th level\n    • 3rd level back\n  • 2nd level back\n  • 2nd level back again\n• 1st level back\n\n";
-
-        // expect(slackify(input)).toBe(expected);
       });
     });
   });
