@@ -210,9 +210,27 @@ describe("Slackify HTML", () => {
   it("handles strikethroughs", () => {
     var input =
       '<del class="ghq-card-content__strikethrough" data-ghq-card-content-type="STRIKETHROUGH" style="text-decoration:line-through">strikethrough</del>';
-    var expected = "~strikethrough~";
+    const expected = "~strikethrough~";
 
-    var output = slackify(input);
+    const output = slackify(input);
+    expect(output).toBe(expected);
+  });
+  
+  it("handles bold & link", () => {
+    const input =
+      '<strong class="ghq-card-content__bold" data-ghq-card-content-type="BOLD">Work Intake (Request Forms)<br></strong><br><a class="ghq-card-content__link" data-ghq-card-content-type="LINK" href="https://wrike.wistia.com/medias/icpvdlvxa5" target="_blank" rel="noopener noreferrer"><u class="ghq-card-content__underline" data-ghq-card-content-type="UNDERLINE" style="text-decoration:underline">https://wrike.wistia.com/medias/icpvdlvxa5</u></a>';
+    const expected = "*Work Intake (Request Forms)*\n\n<https://wrike.wistia.com/medias/icpvdlvxa5|https://wrike.wistia.com/medias/icpvdlvxa5>";
+
+    const output = slackify(input);
+    expect(output).toBe(expected);
+  });
+
+  it("handle links with hidden br & strip", () => {
+    const input =
+      '<strong class="ghq-card-content__bold" data-ghq-card-content-type="BOLD">Work Intake (ad-hoc)</strong><a class="ghq-card-content__link" data-ghq-card-content-type="LINK" href="https://wrike.wistia.com/medias/q97lz2gze7" target="_blank" rel="noopener noreferrer"><br><u class="ghq-card-content__underline" data-ghq-card-content-type="UNDERLINE" style="text-decoration:underline">https://wrike.wistia.com/medias/q97lz2gze7</u></a>';
+    const expected = "*Work Intake (ad-hoc)*<https://wrike.wistia.com/medias/q97lz2gze7|https://wrike.wistia.com/medias/q97lz2gze7>";
+
+    const output = slackify(input);
     expect(output).toBe(expected);
   });
 
