@@ -18,9 +18,9 @@ function walkLink(dom) {
   if (dom) {
     dom.forEach(function (el) {
       if (el.type === 'text')
-        out = el.data;
+        out += el.data;
       else if (el.type === 'tag' && el.children)
-        out = walkLink(el.children);
+        out += walkLink(el.children);
     });
   }
   return out;
