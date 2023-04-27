@@ -1,7 +1,5 @@
-var htmlparser = require("htmlparser"),
-  Entities = require("html-entities").AllHtmlEntities;
-
-entities = new Entities();
+const htmlparser = require("htmlparser"),
+    entities = require("html-entities");
 
 module.exports = function slackify(html) {
   var handler = new htmlparser.DefaultHandler(function (error, dom) {
@@ -13,6 +11,20 @@ module.exports = function slackify(html) {
   if (dom) return entities.decode(walk(dom));
   else return "";
 };
+
+function walkLink(dom) {
+  let out='';
+
+  if (dom) {
+    dom.forEach(function (el) {
+      if (el.type === 'text')
+        out = el.data;
+      else if (el.type === 'tag' && el.children)
+        out = walkLink(el.children);
+    });
+  }
+  return out;
+}
 
 function walkList(dom, ordered, nesting, start) {
   var out = "";
@@ -221,7 +233,7 @@ function walk(dom, nesting) {
         switch (el.name) {
           case "a":
             if (el.attribs && el.attribs.href) {
-              out += "<" + el.attribs.href + "|" + walk(el.children) + ">";
+              out += "<" + el.attribs.href + "|" + walkLink(el.children) + ">";
             } else {
               out += walk(el.children);
             }
