@@ -1,27 +1,46 @@
-var htmlparser = require("htmlparser"),
-  Entities = require("html-entities").AllHtmlEntities;
-
-entities = new Entities();
+const htmlparser = require("htmlparser"),
+    entities = require("html-entities");
 
 module.exports = function slackify(html) {
-  var handler = new htmlparser.DefaultHandler(function (error, dom) {
+  const handler = new htmlparser.DefaultHandler(function (error, dom) {
     // error ignored
   });
-  var parser = new htmlparser.Parser(handler);
+  const parser = new htmlparser.Parser(handler);
   parser.parseComplete(html);
-  var dom = handler.dom;
+  const dom = handler.dom;
   if (dom) return entities.decode(walk(dom));
   else return "";
 };
 
-function walkList(dom, ordered, nesting, start) {
-  var out = "";
+function walkLink(dom) {
+  let out='';
+
   if (dom) {
-    var listItemIndex = start ? start : 1;
     dom.forEach(function (el) {
+      if (el.type === 'text')
+        out += el.data;
+      else if (el.type === 'tag' && el.children)
+        out += walkLink(el.children);
+    });
+  }
+  return out;
+}
+
+function walkList(dom, ordered, nesting, start) {
+  let out = "";
+  if (dom) {
+    let listItemIndex = start ? start : 1;
+    dom.forEach(function (el) {
+      let suffixSpace;
+      let prefixSpace;
       if ("text" === el.type && el.data.trim() !== "") {
         out += el.data;
       } else if ("tag" === el.type) {
+        let i;
+        let content;
+        let contentArr;
+        let innerOutput;
+
         switch (el.name) {
           case "li":
             // Add indentation based on the nesting level
@@ -53,19 +72,19 @@ function walkList(dom, ordered, nesting, start) {
             break;
           case "strong":
             content = walkList(el.children);
-            var contentArr = content.split("\n");
-            var innerOutput = "";
-            for (var i = 0; i < contentArr.length; i++) {
+            contentArr = content.split("\n");
+            innerOutput = "";
+            for (i = 0; i < contentArr.length; i++) {
               content = contentArr[i];
               if (content.trim() !== "") {
-                var prefixSpace = false;
-                var suffixSpace = false;
+                prefixSpace = false;
+                suffixSpace = false;
                 if (content && content.charAt(0) === " ") {
-                  content = content.substr(1, content.length);
+                  content = content.substring(1, content.length);
                   prefixSpace = true;
                 }
                 if (content && content.charAt(content.length - 1) === " ") {
-                  content = content.substr(0, content.length - 1);
+                  content = content.substring(0, content.length - 1);
                   suffixSpace = true;
                 }
                 if (prefixSpace) {
@@ -91,19 +110,19 @@ function walkList(dom, ordered, nesting, start) {
             break;
           case "em":
             content = walkList(el.children);
-            var contentArr = content.split("\n");
-            var innerOutput = "";
-            for (var i = 0; i < contentArr.length; i++) {
+            contentArr = content.split("\n");
+            innerOutput = "";
+            for (i = 0; i < contentArr.length; i++) {
               content = contentArr[i];
               if (content.trim() !== "") {
-                var prefixSpace = false;
-                var suffixSpace = false;
+                prefixSpace = false;
+                suffixSpace = false;
                 if (content && content.charAt(0) === " ") {
-                  content = content.substr(1, content.length);
+                  content = content.substring(1, content.length);
                   prefixSpace = true;
                 }
                 if (content && content.charAt(content.length - 1) === " ") {
-                  content = content.substr(0, content.length - 1);
+                  content = content.substring(0, content.length - 1);
                   suffixSpace = true;
                 }
                 if (prefixSpace) {
@@ -131,7 +150,7 @@ function walkList(dom, ordered, nesting, start) {
 }
 
 function walkPre(dom) {
-  var out = "";
+  let out = "";
   if (dom) {
     dom.forEach(function (el) {
       if ("text" === el.type) {
@@ -145,7 +164,7 @@ function walkPre(dom) {
 }
 
 function walkTable(dom) {
-  var out = "";
+  let out = "";
   if (dom) {
     dom.forEach(function (el) {
       if ("tag" === el.type) {
@@ -162,16 +181,16 @@ function walkTable(dom) {
 }
 
 function walkTableHead(dom) {
-  var out = "";
+  let out = "";
   if (dom) {
-    var headers = [];
+    const headers = [];
     dom.forEach(function (el) {
       if ("text" === el.type && el.data.trim() !== "") {
         out += el.data;
       } else if ("tr" === el.name) {
         out += walkTableHead(el.children);
       } else if ("th" === el.name) {
-        var header = walkTableHead(el.children);
+        const header = walkTableHead(el.children);
         headers.push(header);
         out += "| " + header + " ";
       }
@@ -180,7 +199,7 @@ function walkTableHead(dom) {
       out += " |\n";
       headers.forEach(function (item) {
         out += "| ";
-        for (i = 0; i < item.length; i++) {
+        for (let i = 0; i < item.length; i++) {
           out += "-";
         }
         out += " ";
@@ -193,7 +212,7 @@ function walkTableHead(dom) {
 }
 
 function walkTableBody(dom) {
-  var out = "";
+  let out = "";
   if (dom) {
     dom.forEach(function (el) {
       if ("text" === el.type && el.data.trim() !== "") {
@@ -212,16 +231,23 @@ function walk(dom, nesting) {
   if (!nesting) {
     nesting = 0;
   }
-  var out = "";
+  let out = "";
   if (dom)
     dom.forEach(function (el) {
+      let suffixSpace;
+      let prefixSpace;
       if ("text" === el.type) {
         out += el.data;
       } else if ("tag" === el.type) {
+        let i;
+        let content;
+        let contentArr;
+        let innerOutput;
+
         switch (el.name) {
           case "a":
             if (el.attribs && el.attribs.href) {
-              out += "<" + el.attribs.href + "|" + walk(el.children) + ">";
+              out += "<" + el.attribs.href + "|" + walkLink(el.children) + ">";
             } else {
               out += walk(el.children);
             }
@@ -233,19 +259,19 @@ function walk(dom, nesting) {
           case "strong":
           case "b":
             content = walk(el.children);
-            var contentArr = content.split("\n");
-            var innerOutput = "";
-            for (var i = 0; i < contentArr.length; i++) {
+            contentArr = content.split("\n");
+            innerOutput = "";
+            for (i = 0; i < contentArr.length; i++) {
               content = contentArr[i];
               if (content.trim() !== "") {
-                var prefixSpace = false;
-                var suffixSpace = false;
+                prefixSpace = false;
+                suffixSpace = false;
                 if (content && content.charAt(0) === " ") {
-                  content = content.substr(1, content.length);
+                  content = content.substring(1, content.length);
                   prefixSpace = true;
                 }
                 if (content && content.charAt(content.length - 1) === " ") {
-                  content = content.substr(0, content.length - 1);
+                  content = content.substring(0, content.length - 1);
                   suffixSpace = true;
                 }
                 if (prefixSpace) {
@@ -289,19 +315,19 @@ function walk(dom, nesting) {
           case "i":
           case "em":
             content = walk(el.children);
-            var contentArr = content.split("\n");
-            var innerOutput = "";
-            for (var i = 0; i < contentArr.length; i++) {
+            contentArr = content.split("\n");
+            innerOutput = "";
+            for (i = 0; i < contentArr.length; i++) {
               content = contentArr[i];
               if (content.trim() !== "") {
-                var prefixSpace = false;
-                var suffixSpace = false;
+                prefixSpace = false;
+                suffixSpace = false;
                 if (content && content.charAt(0) === " ") {
-                  content = content.substr(1, content.length);
+                  content = content.substring(1, content.length);
                   prefixSpace = true;
                 }
                 if (content && content.charAt(content.length - 1) === " ") {
-                  content = content.substr(0, content.length - 1);
+                  content = content.substring(0, content.length - 1);
                   suffixSpace = true;
                 }
                 if (prefixSpace) {
@@ -335,7 +361,7 @@ function walk(dom, nesting) {
             break;
           case "ol":
           case "ul":
-            var startIndex = el.attribs ? el.attribs.start : false;
+            const startIndex = el.attribs ? el.attribs.start : false;
             out += walkList(el.children, "ol" === el.name, nesting, startIndex);
             break;
           case "code":
@@ -348,7 +374,7 @@ function walk(dom, nesting) {
             out += walkTable(el.children);
             break;
           case "img":
-            var alt = el.attribs.alt;
+            const alt = el.attribs.alt;
             out +=
               "<Inline Image" +
               (alt !== "" ? "(" + alt + ")" : "") +
@@ -358,8 +384,8 @@ function walk(dom, nesting) {
             break;
           case "blockquote":
             content = walk(el.children);
-            var innerOutput = "";
-            var contentArr = content.split("\n");
+            innerOutput = "";
+            contentArr = content.split("\n");
             contentArr.forEach((item) => {
               if (el.name === "br" || el.name === "p") {
                 innerOutput += ">" + item;
@@ -368,7 +394,7 @@ function walk(dom, nesting) {
               }
             });
             if (innerOutput.endsWith("\n>\n")) {
-              innerOutput = innerOutput.substr(0, innerOutput.length - 2);
+              innerOutput = innerOutput.substring(0, innerOutput.length - 2);
             }
             out += innerOutput + "\n";
             break;
