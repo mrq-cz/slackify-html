@@ -245,6 +245,11 @@ function walk(dom, nesting) {
         let innerOutput;
 
         switch (el.name) {
+          case "summary":
+            out += `\n*${walk(el.children).trim()}*\n`
+            break;
+
+
           case "a":
             if (el.attribs && el.attribs.href) {
               out += "<" + el.attribs.href + "|" + walkLink(el.children) + ">";
