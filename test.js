@@ -293,5 +293,19 @@ describe("Slackify HTML", () => {
         expect(slackify(input)).toBe(expected);
       });
     });
+
+    it('should handle collapsible elements', () => {
+
+      const input = `<details class="ghq-card-content__collapsible" data-ghq-card-content-type="COLLAPSIBLE"><summary class="ghq-card-content__collapsible-summary" data-ghq-card-content-type="COLLAPSIBLE_SUMMARY"><p class="ghq-card-content__paragraph" data-ghq-card-content-type="paragraph">Collapsible Element with nested one</p></summary><div class="ghq-card-content__collapsible-content" data-ghq-card-content-type="COLLAPSIBLE_CONTENT"><p class="ghq-card-content__paragraph" data-ghq-card-content-type="paragraph">Below is nested</p><details class="ghq-card-content__collapsible" data-ghq-card-content-type="COLLAPSIBLE"><summary class="ghq-card-content__collapsible-summary" data-ghq-card-content-type="COLLAPSIBLE_SUMMARY"><p class="ghq-card-content__paragraph" data-ghq-card-content-type="paragraph">Summary</p></summary><div class="ghq-card-content__collapsible-content" data-ghq-card-content-type="COLLAPSIBLE_CONTENT"><p class="ghq-card-content__paragraph" data-ghq-card-content-type="paragraph">Content</p></div></details></div></details>`
+
+      const expected = `
+*Collapsible Element with nested one*
+Below is nested
+
+*Summary*
+Content
+`
+      expect(slackify(input)).toBe(expected);
+    })
   });
 });
