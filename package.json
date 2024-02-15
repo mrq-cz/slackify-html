@@ -1,10 +1,10 @@
 {
   "name": "slackify-html",
-  "version": "1.0.0",
+  "version": "1.3.4",
   "description": "convert simple html to slack markdown",
   "main": "slackify-html.js",
   "scripts": {
-    "test": "tap tests.js"
+    "test": "jest test.js"
   },
   "repository": {
     "type": "git",
@@ -25,10 +25,10 @@
   },
   "homepage": "https://github.com/mrq-cz/slackify-html",
   "dependencies": {
-    "html-entities": "^1.1.3",
+    "html-entities": "^2.3.3",
     "htmlparser": "^1.7.7"
   },
   "devDependencies": {
-    "tap": "^1.4.0"
+    "jest": "^29.3.1"
   }
 }
